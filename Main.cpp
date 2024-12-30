@@ -1,13 +1,25 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
+#include <string>
 
 using namespace std;
+
+// Struct to store history records
+struct HistoryRecord {
+    string operation;
+    double result;
+};
+
+// Vector to store history
+vector<HistoryRecord> history;
 
 // Function prototypes
 void arithmeticOperations();
 void areaCalculation();
 void volumeCalculation();
 void solveSimultaneous();
+void displayHistory();
 
 int main() {
     int choice;
@@ -17,7 +29,8 @@ int main() {
         cout << "\n2. Area of Figures";
         cout << "\n3. Volume of Figures";
         cout << "\n4. Solve Simultaneous Equations";
-        cout << "\n5. Exit";
+        cout << "\n5. Display History";
+        cout << "\n6. Exit";
         cout << "\nEnter your choice: ";
         cin >> choice;
 
@@ -35,12 +48,15 @@ int main() {
                 solveSimultaneous();
                 break;
             case 5:
+                displayHistory();
+                break;
+            case 6:
                 cout << "Exiting...\n";
                 break;
             default:
                 cout << "Invalid choice! Try again.\n";
         }
-    } while (choice != 5);
+    } while (choice != 6);
 
     return 0;
 }
@@ -72,10 +88,14 @@ void arithmeticOperations() {
             return;
     }
     cout << "Result: " << result << endl;
+
+    // Store in history
+    history.push_back({"Arithmetic Operation: " + to_string(num1) + " " + op + " " + to_string(num2), result});
 }
 
 void areaCalculation() {
     int choice;
+    double result;
     cout << "\n1. Area of Circle";
     cout << "\n2. Area of Rectangle";
     cout << "\n3. Area of Triangle";
@@ -87,21 +107,33 @@ void areaCalculation() {
             double radius;
             cout << "Enter radius: ";
             cin >> radius;
-            cout << "Area of Circle: " << M_PI * radius * radius << endl;
+            result = M_PI * radius * radius;
+            cout << "Area of Circle: " << result << endl;
+
+            // Store in history
+            history.push_back({"Area of Circle with radius " + to_string(radius), result});
             break;
         }
         case 2: {
             double length, width;
             cout << "Enter length and width: ";
             cin >> length >> width;
-            cout << "Area of Rectangle: " << length * width << endl;
+            result = length * width;
+            cout << "Area of Rectangle: " << result << endl;
+
+            // Store in history
+            history.push_back({"Area of Rectangle with length " + to_string(length) + " and width " + to_string(width), result});
             break;
         }
         case 3: {
             double base, height;
             cout << "Enter base and height: ";
             cin >> base >> height;
-            cout << "Area of Triangle: " << 0.5 * base * height << endl;
+            result = 0.5 * base * height;
+            cout << "Area of Triangle: " << result << endl;
+
+            // Store in history
+            history.push_back({"Area of Triangle with base " + to_string(base) + " and height " + to_string(height), result});
             break;
         }
         default:
@@ -111,6 +143,7 @@ void areaCalculation() {
 
 void volumeCalculation() {
     int choice;
+    double result;
     cout << "\n1. Volume of Sphere";
     cout << "\n2. Volume of Cube";
     cout << "\n3. Volume of Cylinder";
@@ -122,21 +155,33 @@ void volumeCalculation() {
             double radius;
             cout << "Enter radius: ";
             cin >> radius;
-            cout << "Volume of Sphere: " << (4.0 / 3.0) * M_PI * pow(radius, 3) << endl;
+            result = (4.0 / 3.0) * M_PI * pow(radius, 3);
+            cout << "Volume of Sphere: " << result << endl;
+
+            // Store in history
+            history.push_back({"Volume of Sphere with radius " + to_string(radius), result});
             break;
         }
         case 2: {
             double side;
             cout << "Enter side length: ";
             cin >> side;
-            cout << "Volume of Cube: " << pow(side, 3) << endl;
+            result = pow(side, 3);
+            cout << "Volume of Cube: " << result << endl;
+
+            // Store in history
+            history.push_back({"Volume of Cube with side " + to_string(side), result});
             break;
         }
         case 3: {
             double radius, height;
             cout << "Enter radius and height: ";
             cin >> radius >> height;
-            cout << "Volume of Cylinder: " << M_PI * pow(radius, 2) * height << endl;
+            result = M_PI * pow(radius, 2) * height;
+            cout << "Volume of Cylinder: " << result << endl;
+
+            // Store in history
+            history.push_back({"Volume of Cylinder with radius " + to_string(radius) + " and height " + to_string(height), result});
             break;
         }
         default:
@@ -146,6 +191,8 @@ void volumeCalculation() {
 
 void solveSimultaneous() {
     double a1, b1, c1, a2, b2, c2;
+    double x, y;
+    bool hasSolution = true;
 
     cout << "For the first equation (a1*x + b1*y = c1), enter a1, b1, and c1: ";
     cin >> a1 >> b1 >> c1;
@@ -157,9 +204,23 @@ void solveSimultaneous() {
 
     if (determinant == 0) {
         cout << "The equations have no unique solution (they are either dependent or inconsistent).\n";
+        hasSolution = false;
     } else {
-        double x = (c1 * b2 - c2 * b1) / determinant;
-        double y = (a1 * c2 - a2 * c1) / determinant;
+        x = (c1 * b2 - c2 * b1) / determinant;
+        y = (a1 * c2 - a2 * c1) / determinant;
         cout << "The solution is: x = " << x << ", y = " << y << endl;
+    }
+
+    if (hasSolution) {
+        // Store in history
+        history.push_back({"Solve Simultaneous Equations", x});
+        history.push_back({"Solve Simultaneous Equations", y});
+    }
+}
+
+void displayHistory() {
+    cout << "\nCalculation History:\n";
+    for (const auto& record : history) {
+        cout << record.operation << " = " << record.result << endl;
     }
 }
